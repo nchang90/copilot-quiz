@@ -477,3 +477,26 @@ code {
   font-size: 0.8rem;
   color: var(--muted);
 }
+
+.wip-banner {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  padding: 14px 20px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #facc15,
+    #facc15 12px,
+    #1a1200 12px,
+    #1a1200 24px
+  );
+  color: #facc15;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-shadow: 0 0 8px rgb(0 0 0 / 0.8);
+  border-bottom: 3px solid #facc15;
+  box-shadow: 0 4px 20px rgb(250 204 21 / 0.35);
+}
