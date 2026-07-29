@@ -409,3 +409,71 @@ code {
   pointer-events: none;
   z-index: 9999;
 }
+
+.speakers-section {
+  margin-bottom: 24px;
+  padding: 24px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+}
+
+.speakers-section.is-hidden {
+  display: none;
+}
+
+.speakers-header {
+  margin-bottom: 20px;
+}
+
+.speakers-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 4px 0 6px;
+}
+
+.speakers-subtitle {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.speakers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.speaker-card {
+  background: rgb(255 255 255 / 0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 16px;
+  text-align: center;
+}
+
+.speaker-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--maze-blue-dim);
+  border: 2px dashed var(--border);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 12px;
+  font-size: 1.25rem;
+  color: var(--muted);
+}
+
+.speaker-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.speaker-role {
+  font-size: 0.8rem;
+  color: var(--muted);
+}

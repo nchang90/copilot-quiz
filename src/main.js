@@ -361,4 +361,11 @@ function spawnConfetti() {
 nextBtn.addEventListener('click', goNext)
 restartBtn.addEventListener('click', resetQuiz)
 
+// Speakers section: visible for 2 weeks only (expires 2026-08-12)
+const SPEAKERS_EXPIRY = new Date('2026-08-12T00:00:00Z')
+const speakersSection = document.getElementById('speakers-section')
+if (speakersSection && Date.now() >= SPEAKERS_EXPIRY.getTime()) {
+  speakersSection.classList.add('is-hidden')
+}
+
 resetQuiz()
