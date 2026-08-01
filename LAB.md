@@ -1,6 +1,6 @@
 # GitHub Copilot Apps — Demo Lab
 
-> **20–30 min** | Quiz app → multi-repo event-driven system with Canvas, Agents, MCP, and Skills.
+> **30–40 min** | Quiz app → multi-repo event-driven system with Canvas, Agents, MCP, Skills, and the newest Copilot CLI features.
 
 ## Architecture
 
@@ -19,7 +19,7 @@ Canvas (Plan + Approval + Execution)
 | copilot-quiz (this) | Event producer |
 | [copilot-quiz-service](https://github.com/NickAzureDevops/copilot-quiz-service) | Event consumer + dashboard |
 
-## Demo Flow (20 min)
+## Demo Flow (30 min)
 
 ### 1. Canvas + Plan Mode (4 min)
 Prompt: *"Instrument this quiz to post events to a local service. Show me a plan first."*
@@ -49,14 +49,64 @@ cd copilot-quiz && npm run dev
 cd copilot-quiz-service && node src/server.js
 ```
 
-### 5. Close (2 min)
-> "We planned it, agents built it, skills validated it, automations run it — and it all works. That's AI-native engineering."
+### 5. `/impeccable` Design Review (3 min)
+After the agents produce code changes, run `/impeccable` to get instant design feedback from a dedicated critique agent.
+
+Prompt: *"Run impeccable on the event bridge wiring across both repos."*
+
+> **What to show:** `/impeccable` surfaces signal-to-noise design notes (not style, not lint). It reasons about coupling, data flow, and contract surface — exactly what you want when two repos talk over HTTP.
+
+---
+
+### 6. Rubber-Duck Agent (3 min)
+Before merging, drop the diff or a stacked PR into the **Rubber-Duck** agent for a logic-and-bug review.
+
+Prompt: *"Rubber-duck the emitEvent changes — are there any edge cases or logic errors?"*
+
+> **What to show:** The Rubber-Duck agent explains *its reasoning* about what could go wrong, without fixing anything. Great for live demos — it narrates like a senior reviewer, not a linter.
+
+---
+
+### 7. New Diff GUI + Stacked PRs (4 min)
+Open the **Diff Viewer** from the session sidebar. Show the staged changes across both repos side-by-side with inline annotation comments.
+
+Then create a **stacked PR**: one PR for the producer-side emitEvent wiring and a second that depends on it for the service-side validation. Both appear in the session sidebar with their dependency chain shown.
+
+> **What to show:** The diff GUI renders inline review comments from Copilot. Stacked PRs give a reviewable, merge-sequenced view of cross-repo work — no manual rebasing.
+
+**Create stacked PRs from the terminal:**
+```bash
+# PR 1 — producer changes
+gh pr create --title "feat: event emission wiring" --body "scoreUpdated + achievementCandidate via emitEvent()"
+
+# PR 2 — stacks on PR 1
+gh pr create --title "feat: service contract validation" --body "Validates event schema after producer PR merges" --base <branch-of-pr-1>
+```
+
+---
+
+### 8. `/chronicle` Summary (2 min)
+At the end of the session, run `/chronicle` to generate a structured summary of everything that happened — decisions made, files changed, PRs opened, skills invoked.
+
+Prompt: *"/chronicle — summarise this session."*
+
+> **What to show:** A ready-made narrative of the demo session, useful for standups, docs, or handing off to a colleague. Zero-effort audit trail.
+
+---
+
+### 9. Close (2 min)
+> "We planned it, agents built it, `/impeccable` reviewed it, Rubber-Duck found the edge cases, stacked PRs sequenced the merge, and `/chronicle` wrote the summary. That's AI-native engineering."
 
 ## Checklist
 - [ ] Quiz at `localhost:5173`
 - [ ] Events at `localhost:3001` within 2s
 - [ ] No CORS errors
 - [ ] No quiz disruption from event failures
+- [ ] `/impeccable` run on event bridge wiring
+- [ ] Rubber-Duck reviewed emitEvent edge cases
+- [ ] Diff GUI shows inline canvas comments
+- [ ] Stacked PRs created (producer → service)
+- [ ] `/chronicle` summary generated
 
 ---
 
