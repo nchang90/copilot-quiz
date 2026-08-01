@@ -55,6 +55,10 @@ This repo includes a reusable prompt skill:
 
 Use it to validate producer-side contract compliance before demos or merges.
 
+## Copilot Canvas Extension
+
+This repo also includes `.github/extensions/copilot-quiz-canvas/`, a Copilot Canvas surface for the producer side of the demo. It exposes the event contract, validates the producer wiring, and can refresh recent events from `copilot-quiz-service` without changing quiz state. The service repo provides the complementary `quiz-canvas` orchestration surface.
+
 ## Interaction
 
 Use the on-screen answer buttons to respond, **Next question** to advance, and **Restart quiz** to run again.
