@@ -49,7 +49,26 @@ cd copilot-quiz && npm run dev
 cd copilot-quiz-service && node src/server.js
 ```
 
-### 5. `/impeccable` Design Review (3 min)
+### 5. Multiple Sessions at Once (3 min)
+One of the most powerful things to show live: Copilot Apps lets you run several sessions in parallel, each on its own branch, all visible in the sidebar simultaneously.
+
+**How to set it up for this demo:**
+
+| Session | Repo | Branch | Purpose |
+|---------|------|--------|---------|
+| Session A | copilot-quiz | `feat/producer-wiring` | Game Agent wiring emitEvent |
+| Session B | copilot-quiz-service | `feat/service-api` | Platform Agent building POST /event |
+| Session C | copilot-quiz | `feat/canvas-extension` | Canvas extension for the producer |
+
+Open each session from the sidebar `+` button. They run independently — you can switch between them, watch agents work in parallel, and merge when each is ready.
+
+> **What to show:** Switch between Session A and B while both agents are mid-task. The sidebar shows live status (thinking / idle / awaiting approval) for each. This is the "AI-native engineering team" moment — multiple agents working in parallel on different parts of the same system, coordinated by you.
+
+**Key talking point:** Each session is an isolated worktree. Changes in Session A don't affect Session B until you merge. You can approve one plan while the other is still planning.
+
+---
+
+### 6. `/impeccable` Design Review (3 min)
 After the agents produce code changes, run `/impeccable` to get instant design feedback from a dedicated critique agent.
 
 Prompt: *"Run impeccable on the event bridge wiring across both repos."*
@@ -58,7 +77,7 @@ Prompt: *"Run impeccable on the event bridge wiring across both repos."*
 
 ---
 
-### 6. Rubber-Duck Agent (3 min)
+### 7. Rubber-Duck Agent (3 min)
 Before merging, drop the diff or a stacked PR into the **Rubber-Duck** agent for a logic-and-bug review.
 
 Prompt: *"Rubber-duck the emitEvent changes — are there any edge cases or logic errors?"*
@@ -67,7 +86,7 @@ Prompt: *"Rubber-duck the emitEvent changes — are there any edge cases or logi
 
 ---
 
-### 7. New Diff GUI + Stacked PRs (4 min)
+### 8. New Diff GUI + Stacked PRs (4 min)
 Open the **Diff Viewer** from the session sidebar. Show the staged changes across both repos side-by-side with inline annotation comments.
 
 Then create a **stacked PR**: one PR for the producer-side emitEvent wiring and a second that depends on it for the service-side validation. Both appear in the session sidebar with their dependency chain shown.
@@ -85,7 +104,7 @@ gh pr create --title "feat: service contract validation" --body "Validates event
 
 ---
 
-### 8. `/chronicle` Summary (2 min)
+### 9. `/chronicle` Summary (2 min)
 At the end of the session, run `/chronicle` to generate a structured summary of everything that happened — decisions made, files changed, PRs opened, skills invoked.
 
 Prompt: *"/chronicle — summarise this session."*
@@ -94,14 +113,15 @@ Prompt: *"/chronicle — summarise this session."*
 
 ---
 
-### 9. Close (2 min)
-> "We planned it, agents built it, `/impeccable` reviewed it, Rubber-Duck found the edge cases, stacked PRs sequenced the merge, and `/chronicle` wrote the summary. That's AI-native engineering."
+### 10. Close (2 min)
+> "We planned it, parallel sessions ran the agents simultaneously, `/impeccable` reviewed it, Rubber-Duck found the edge cases, stacked PRs sequenced the merge, and `/chronicle` wrote the summary. That's AI-native engineering."
 
 ## Checklist
 - [ ] Quiz at `localhost:5173`
 - [ ] Events at `localhost:3001` within 2s
 - [ ] No CORS errors
 - [ ] No quiz disruption from event failures
+- [ ] Multiple sessions running in parallel (A/B/C)
 - [ ] `/impeccable` run on event bridge wiring
 - [ ] Rubber-Duck reviewed emitEvent edge cases
 - [ ] Diff GUI shows inline canvas comments
