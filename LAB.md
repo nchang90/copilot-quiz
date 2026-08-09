@@ -62,7 +62,7 @@ One of the most powerful things to show live: Copilot Apps lets you run several 
 
 Open each session from the sidebar `+` button. They run independently — you can switch between them, watch agents work in parallel, and merge when each is ready.
 
-**Minimal Scope Prompt (Recommended for existing quiz):**
+**Prompt (copy-paste ready):**
 ```
 Wire emitEvent for scoreUpdated and achievementCandidate events to http://localhost:3001/event.
 
@@ -71,22 +71,6 @@ Payloads:
 - achievementCandidate: { score, achievement, level }
 
 Fire-and-forget, swallow errors. Do not disrupt quiz flow or UI. Test end-to-end.
-```
-
-**Multi-Session Orchestration Prompt (Full demo across repos):**
-```
-Coordinate three parallel sessions to demonstrate Copilot Apps orchestration:
-
-Session A (copilot-quiz, branch: feat/producer-wiring):
-- Game Agent: "Wire up scoreUpdated and achievementCandidate event emission to http://localhost:3001/event. Payloads: scoreUpdated = { score, delta, level }, achievementCandidate = { score, achievement, level }. Fire-and-forget, never block quiz."
-
-Session B (copilot-quiz-service, branch: feat/service-api):
-- Platform Agent: "Build POST /event receiver, GET /events list, and a live dashboard showing real-time quiz events. Expect producer events every 2-5 seconds during play."
-
-Session C (copilot-quiz, branch: feat/canvas-extension):
-- Canvas: "Create a Canvas extension that plans the event-driven architecture across both repos, gets approval, then coordinates execution."
-
-Use /agent-merge after both A and B complete to ensure cross-repo schema compatibility. Show all three in the sidebar running simultaneously.
 ```
 
 ---
