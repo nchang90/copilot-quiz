@@ -1,4 +1,11 @@
 steps:
+  - name: Install npm dependencies
+    run: |
+      if [ -f package-lock.json ]; then
+        npm ci
+      else
+        npm install
+      fi
   - name: Fetch base branch for git diff
     run: |
       BASE_REF="${GITHUB_BASE_REF:-main}"
