@@ -1,4 +1,4 @@
-// Extension: quiz-browser
+// Extension: copilot-quiz-browser
 // Opens the Copilot Quiz Vite dev server in a canvas panel.
 // Start the quiz first with: npm run dev (defaults to http://localhost:5173)
 
@@ -21,11 +21,11 @@ const session = await joinSession({
     canvases: [
         createCanvas({
             id: "quiz-browser",
-            displayName: "🤖 Copilot Quiz",
+            displayName: "Copilot Quiz",
             description: "Opens the Copilot Quiz app running on the local Vite dev server",
             open: async () => {
                 const url = await resolveQuizUrl();
-                return { title: "🤖 Copilot Quiz", url };
+                return { title: "Copilot Quiz", url };
             },
         }),
     ],

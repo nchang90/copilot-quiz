@@ -8,28 +8,37 @@
   </head>
   <body>
     <div id="app">
-      <header class="app-header">
-        <div class="app-title-block">
-          <p class="app-kicker">Interactive learning mode</p>
-          <h1>GitHub Copilot Apps Quiz</h1>
-          <p class="app-subtitle">
-            Learn core Copilot Apps workflows through an end-to-end scenario quiz with score, streaks, and instant feedback.
-          </p>
-        </div>
-        <div class="status-pills" aria-label="Interface status">
-          <span class="status-pill status-pill--primary">Quiz live</span>
-          <span class="status-pill">No backend required</span>
-        </div>
-      </header>
-
       <main class="quiz-shell">
         <section class="quiz-panel" aria-label="Quiz experience">
+          <header class="app-header">
+            <div class="app-title-block">
+              <p class="app-kicker">Interactive learning mode</p>
+              <h1>GitHub Copilot Apps Quiz</h1>
+            </div>
+            <div class="status-pills" aria-label="Interface status">
+              <span class="status-pill status-pill--primary">Quiz live</span>
+              <span class="status-pill">copilot-quiz-service ready</span>
+            </div>
+          </header>
+
           <div class="panel-head">
             <div>
-              <p class="panel-label">Question flow</p>
-              <h2 class="panel-title">Scenario challenge</h2>
+              <p id="progress-meta" class="panel-meta">Question 1 of 10</p>
             </div>
-            <p id="progress-meta" class="panel-meta">Question 1 of 10</p>
+            <div id="hud" aria-label="Quiz stats">
+              <div class="stat-pill">
+                <span class="stat-label">Score</span>
+                <span id="score" class="stat-value">0</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-label">Streak</span>
+                <span id="streak" class="stat-value">0</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-label">Progress</span>
+                <span id="progress" class="stat-value">1/10</span>
+              </div>
+            </div>
           </div>
 
           <article id="question-card" class="question-card">
@@ -53,40 +62,6 @@
             </button>
           </div>
         </section>
-
-        <aside class="sidebar-panel" aria-label="Quiz dashboard">
-          <div class="sidebar-card">
-            <p class="panel-label">How scoring works</p>
-            <p class="sidebar-copy">
-              Correct answers add points. Keep a streak to earn a bonus. Score milestones trigger compatible events for
-              the demo event service.
-            </p>
-          </div>
-
-          <div id="hud">
-            <div class="stat-card">
-              <span class="stat-label">Score</span>
-              <span id="score" class="stat-value">0</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-label">Streak</span>
-              <span id="streak" class="stat-value">0</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-label">Progress</span>
-              <span id="progress" class="stat-value">1/10</span>
-            </div>
-          </div>
-
-          <div class="sidebar-card sidebar-card--compact">
-            <p class="panel-label">Focus areas</p>
-            <ul class="control-list">
-              <li><span>Event contracts</span><strong>Supported types only</strong></li>
-              <li><span>Tool usage</span><strong>Safe and efficient flow</strong></li>
-              <li><span>Session workflow</span><strong>Scope + approvals</strong></li>
-            </ul>
-          </div>
-        </aside>
       </main>
     </div>
     <script type="module" src="/src/main.js"></script>

@@ -18,8 +18,9 @@ const restartBtn = document.getElementById('restart-btn')
 const SCORE_PER_CORRECT = 100
 const STREAK_BONUS_STEP = 25
 const ACHIEVEMENT_MILESTONES = [300, 700, 1200, 1800, 2500]
+const QUESTIONS_PER_RUN = 10
 
-const QUIZ_QUESTIONS = [
+const QUESTION_BANK = [
   {
     topic: 'Scope control',
     prompt: 'Scenario: A user asks for a change that conflicts with AGENTS.md. What should Copilot do first?',
@@ -135,7 +136,142 @@ const QUIZ_QUESTIONS = [
     correctIndex: 2,
     explanation: 'A full story connects UX, contract-safe events, and service-side behavior.',
   },
+  {
+    topic: 'Planning mode',
+    prompt: 'Scenario: A session is paused waiting for plan approval. What is the right next step?',
+    options: [
+      'Ignore the plan and start editing files anyway',
+      'Approve or reject the plan with clear feedback',
+      'Delete the session and recreate it',
+      'Change the event endpoint first',
+    ],
+    correctIndex: 1,
+    explanation: 'Plan-mode sessions should be explicitly approved or redirected before execution continues.',
+  },
+  {
+    topic: 'Session coordination',
+    prompt: 'Scenario: Two sessions are working in parallel and one needs a new requirement. What should happen?',
+    options: [
+      'Send a direct session message with the updated requirement',
+      'Wait and hope it notices later',
+      'Force-push unrelated changes',
+      'Edit README.md instead',
+    ],
+    correctIndex: 0,
+    explanation: 'Cross-session messaging is the clean way to redirect active work without losing context.',
+  },
+  {
+    topic: 'Pull requests',
+    prompt: 'Scenario: A branch is ready and the user wants a PR. What is the strongest workflow?',
+    options: [
+      'Open a PR without checking repo context',
+      'Use session context, summarize the change clearly, and open the PR directly',
+      'Rewrite the entire app first',
+      'Only mention the PR in chat',
+    ],
+    correctIndex: 1,
+    explanation: 'A good PR uses the current session context and explains the why behind the change.',
+  },
+  {
+    topic: 'Diff review',
+    prompt: 'Scenario: A reviewer leaves one precise comment on a PR. What is the best response pattern?',
+    options: [
+      'Make broad unrelated changes to show initiative',
+      'Apply the smallest correct fix, explain the decision, and reply on the thread',
+      'Close the PR immediately',
+      'Change the scoring model',
+    ],
+    correctIndex: 1,
+    explanation: 'Focused fixes and a clear thread reply keep review efficient and trustworthy.',
+  },
+  {
+    topic: 'Local changes',
+    prompt: 'Scenario: The worktree has unrelated user edits in another file. How should Copilot behave?',
+    options: [
+      'Revert everything to get a clean tree',
+      'Ignore unrelated changes and avoid touching them',
+      'Delete the changed file',
+      'Commit all files together automatically',
+    ],
+    correctIndex: 1,
+    explanation: 'Unrelated user changes should be preserved unless the user explicitly asks otherwise.',
+  },
+  {
+    topic: 'Event validation',
+    prompt: 'Scenario: You are not sure whether an event name is accepted by the service contract. What is best?',
+    options: [
+      'Guess a close name and see what happens',
+      'Validate against the producer-service contract before emitting',
+      'Send both names for safety',
+      'Skip the payload entirely',
+    ],
+    correctIndex: 1,
+    explanation: 'Contract validation prevents drift and avoids rejected event types.',
+  },
+  {
+    topic: 'Targeted verification',
+    prompt: 'Scenario: You changed only quiz logic in main.js. What verification is most appropriate first?',
+    options: [
+      'Run the smallest existing validation that covers the change',
+      'Rebuild three repositories at once',
+      'Skip verification because it is frontend-only',
+      'Only review screenshots',
+    ],
+    correctIndex: 0,
+    explanation: 'Targeted verification is faster and safer than either skipping checks or over-testing immediately.',
+  },
+  {
+    topic: 'Tool selection',
+    prompt: 'Scenario: You know the exact file you need to inspect. What is the best first move?',
+    options: [
+      'Launch a large background agent',
+      'Read the file directly with a focused file tool',
+      'Refactor the file before reading it',
+      'Open a PR draft first',
+    ],
+    correctIndex: 1,
+    explanation: 'Direct file inspection is the fastest path when the target is already known.',
+  },
+  {
+    topic: 'Backend boundaries',
+    prompt: 'Scenario: You want to store historical event stats for the quiz demo. Where should that logic live?',
+    options: [
+      'In the frontend producer app only',
+      'In the consumer/service side that receives events',
+      'Inside the CSS theme',
+      'Inside the browser title',
+    ],
+    correctIndex: 1,
+    explanation: 'Persistent event history belongs on the service side, not inside the producer UI.',
+  },
+  {
+    topic: 'User intent',
+    prompt: 'Scenario: The user asks for the best way to improve the quiz. What is the strongest product-minded first step?',
+    options: [
+      'Add more replayable content and variety',
+      'Rename every file in the repo',
+      'Change the event endpoint',
+      'Remove scoring to simplify things',
+    ],
+    correctIndex: 0,
+    explanation: 'Replayable content improves long-term engagement more than superficial infrastructure changes.',
+  },
 ]
+
+function shuffleQuestions(questions) {
+  const shuffled = [...questions]
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1))
+    ;[shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]]
+  }
+
+  return shuffled
+}
+
+function createQuizQuestions() {
+  return shuffleQuestions(QUESTION_BANK).slice(0, QUESTIONS_PER_RUN)
+}
 
 let score = 0
 let streak = 0
@@ -145,13 +281,14 @@ let currentQuestionIndex = 0
 let answered = false
 let quizComplete = false
 let achievementsHit = new Set()
+let quizQuestions = createQuizQuestions()
 
 function updateHud() {
   scoreEl.textContent = String(score)
   streakEl.textContent = String(streak)
   const progressValue = quizComplete
-    ? `${QUIZ_QUESTIONS.length}/${QUIZ_QUESTIONS.length}`
-    : `${currentQuestionIndex + 1}/${QUIZ_QUESTIONS.length}`
+    ? `${quizQuestions.length}/${quizQuestions.length}`
+    : `${currentQuestionIndex + 1}/${quizQuestions.length}`
   progressEl.textContent = progressValue
   progressMetaEl.textContent = `Question ${progressValue}`
 }
@@ -175,7 +312,7 @@ function emitAchievement(achievement) {
   emitEvent('achievementCandidate', {
     score,
     achievement,
-    level: Math.min(currentQuestionIndex + 1, QUIZ_QUESTIONS.length),
+    level: Math.min(currentQuestionIndex + 1, quizQuestions.length),
   })
 }
 
@@ -189,7 +326,7 @@ function checkMilestones() {
 }
 
 function renderQuestion() {
-  const question = QUIZ_QUESTIONS[currentQuestionIndex]
+  const question = quizQuestions[currentQuestionIndex]
   questionTopicEl.textContent = `Topic · ${question.topic}`
   questionTextEl.textContent = question.prompt
   answersEl.innerHTML = ''
@@ -205,7 +342,7 @@ function renderQuestion() {
 
   setFeedback('Ready?', 'Choose the best answer to continue.', '', 'info')
   nextBtn.disabled = true
-  nextBtn.textContent = currentQuestionIndex === QUIZ_QUESTIONS.length - 1 ? 'Finish quiz' : 'Next question'
+  nextBtn.textContent = currentQuestionIndex === quizQuestions.length - 1 ? 'Finish quiz' : 'Next question'
   updateHud()
 }
 
@@ -213,7 +350,7 @@ function selectAnswer(selectedIndex) {
   if (answered || quizComplete) return
 
   answered = true
-  const question = QUIZ_QUESTIONS[currentQuestionIndex]
+  const question = quizQuestions[currentQuestionIndex]
   const isCorrect = selectedIndex === question.correctIndex
   const answerButtons = [...answersEl.querySelectorAll('.answer')]
 
@@ -281,7 +418,7 @@ function finishQuiz() {
 function goNext() {
   if (!answered || quizComplete) return
 
-  if (currentQuestionIndex >= QUIZ_QUESTIONS.length - 1) {
+  if (currentQuestionIndex >= quizQuestions.length - 1) {
     finishQuiz()
     return
   }
@@ -301,6 +438,7 @@ function resetQuiz() {
   answered = false
   quizComplete = false
   achievementsHit = new Set()
+  quizQuestions = createQuizQuestions()
   restartBtn.classList.add('is-hidden')
   renderQuestion()
 }

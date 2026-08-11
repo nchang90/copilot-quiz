@@ -55,16 +55,23 @@ One of the most powerful things to show live: Copilot Apps lets you run several 
 **How to set it up for this demo:**
 
 | Session | Repo | Branch | Purpose |
-|---------|------|--------|---------|
+| --- | --- | --- | --- |
 | Session A | copilot-quiz | `feat/producer-wiring` | Game Agent wiring emitEvent |
 | Session B | copilot-quiz-service | `feat/service-api` | Platform Agent building POST /event |
 | Session C | copilot-quiz | `feat/canvas-extension` | Canvas extension for the producer |
 
 Open each session from the sidebar `+` button. They run independently — you can switch between them, watch agents work in parallel, and merge when each is ready.
 
-> **What to show:** Switch between Session A and B while both agents are mid-task. The sidebar shows live status (thinking / idle / awaiting approval) for each. This is the "AI-native engineering team" moment — multiple agents working in parallel on different parts of the same system, coordinated by you.
+**Prompt (copy-paste ready):**
+```
+Wire emitEvent for scoreUpdated and achievementCandidate events to http://localhost:3001/event.
 
-**Key talking point:** Each session is an isolated worktree. Changes in Session A don't affect Session B until you merge. You can approve one plan while the other is still planning.
+Payloads:
+- scoreUpdated: { score, delta, level }
+- achievementCandidate: { score, achievement, level }
+
+Fire-and-forget, swallow errors. Do not disrupt quiz flow or UI. Test end-to-end.
+```
 
 ---
 
