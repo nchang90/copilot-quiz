@@ -4,12 +4,10 @@ Aim for a 20–30 minute walkthrough, with extra time built in for planning, liv
 ### 1. Frame the problem
 Explain the goal: this quiz app needs to emit only valid events to the local service without disrupting the player experience.
 
-Key points:
-- producer must emit to `http://localhost:3001/event`
-- only `scoreUpdated` and `achievementCandidate` are allowed
-- event requests are fire-and-forget and must silently fail without blocking gameplay
-- the service should reflect the real-time score and achievement flow in the dashboard
-
+- [http://localhost:3001](http://localhost:3001) is the dashboard/service host
+- /event is a POST-only API route, not a browser page
+- a browser GET to /event will fail with “Cannot GET /event”
+- the quiz app should POST to that endpoint from JavaScript, not by navigating to it in the browser
 ### 2. Canvas + Plan Mode
 Prompt: *"Instrument this quiz to post events to a local service. Show me a plan first.*
 
