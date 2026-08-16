@@ -9,7 +9,7 @@ Explain the goal: this quiz app needs to emit only valid events to the local ser
 - a browser GET to /event will fail with “Cannot GET /event”
 - the quiz app should POST to that endpoint from JavaScript, not by navigating to it in the browser
 ### 2. Canvas + Plan Mode
-Prompt: *"Instrument this quiz to post events to a local service. Show me a plan first.*
+Prompt: *"Instrument this quiz to post events to a local service. Show me a plan first."*
 
 Keep the plan focused on a small set of tasks:
 - confirm the event contract
@@ -95,7 +95,4 @@ State the final outcome: the producer and service are aligned on the contract, t
 - [ ] `/impeccable` run on event bridge wiring (optional)
 - [ ] Rubber-Duck reviewed emitEvent edge cases (optional)
 - [ ] Diff GUI shows inline canvas comments (optional)
-- [ ] `/chronicle` summary generated
-- [ ] Diff GUI shows inline canvas comments
-- [ ] Stacked PRs created
 - [ ] `/chronicle` summary generated

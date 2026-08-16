@@ -205,10 +205,10 @@ async function loadModel(){
 async function refreshEvents(){
  const result = await fetch('/refresh').then(r => r.json());
  const model = await fetch('/model').then(r => r.json());
- render(model, result);
+ render(model);
 }
 
-function render(m, refreshResult) {
+function render(m) {
  const status = (m.status || 'ready').toLowerCase();
  const pill = document.getElementById('statusPill');
  pill.textContent = status === 'valid' ? 'Validated' : status === 'refreshed' ? 'Live' : status === 'invalid' ? 'Invalid' : 'Ready';
@@ -241,26 +241,64 @@ function render(m, refreshResult) {
  const checks = Array.isArray(m.checks) && m.checks.length ? m.checks : [];
  const allPass = checks.length ? checks.every(c => c.pass) : false;
  document.getElementById('validationSummary').textContent = checks.length ? (allPass ? 'PASS' : 'Review') : 'Pending';
- document.getElementById('checks').innerHTML = checks.length ? checks.map(check => `
-   <div class="check">
-     <span class="check-label">${check.name}</span>
-     <span class="check-status ${check.pass ? 'pass' : 'fail'}">${check.pass ? 'PASS' : 'FAIL'}</span>
-   </div>
- `).join('') : '<div class="empty">No checks have run yet.</div>';
+
+ const checksEl = document.getElementById('checks');
+ checksEl.replaceChildren();
+ if (checks.length) {
+   checks.forEach((check) => {
+     const item = document.createElement('div');
+     item.className = 'check';
+
+     const label = document.createElement('span');
+     label.className = 'check-label';
+     label.textContent = check.name || 'Unnamed check';
+
+     const statusEl = document.createElement('span');
+     statusEl.className = `check-status ${check.pass ? 'pass' : 'fail'}`;
+     statusEl.textContent = check.pass ? 'PASS' : 'FAIL';
+
+     item.append(label, statusEl);
+     checksEl.appendChild(item);
+   });
+ } else {
+   const empty = document.createElement('div');
+   empty.className = 'empty';
+   empty.textContent = 'No checks have run yet.';
+   checksEl.appendChild(empty);
+ }
 
  const events = Array.isArray(m.events) && m.events.length ? m.events : [];
+ const eventsEl = document.getElementById('events');
+ eventsEl.replaceChildren();
  if (events.length) {
-   document.getElementById('events').innerHTML = events.map((event) => `
-     <article class="event-item">
-       <header>
-         <span class="name">${event.type || 'event'}</span>
-         <time>${event.timestamp ? new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'now'}</time>
-       </header>
-       <pre>${JSON.stringify(event.payload || event, null, 2)}</pre>
-     </article>
-   `).join('');
+   events.forEach((event) => {
+     const item = document.createElement('article');
+     item.className = 'event-item';
+
+     const header = document.createElement('header');
+
+     const name = document.createElement('span');
+     name.className = 'name';
+     name.textContent = event.type || 'event';
+
+     const time = document.createElement('time');
+     time.textContent = event.timestamp
+       ? new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+       : 'now';
+
+     header.append(name, time);
+
+     const payload = document.createElement('pre');
+     payload.textContent = JSON.stringify(event.payload || event, null, 2);
+
+     item.append(header, payload);
+     eventsEl.appendChild(item);
+   });
  } else {
-   document.getElementById('events').innerHTML = '<div class="empty">No events received yet. Refresh the service stream to inspect the latest payloads.</div>';
+   const empty = document.createElement('div');
+   empty.className = 'empty';
+   empty.textContent = 'No events received yet. Refresh the service stream to inspect the latest payloads.';
+   eventsEl.appendChild(empty);
  }
 }
 
