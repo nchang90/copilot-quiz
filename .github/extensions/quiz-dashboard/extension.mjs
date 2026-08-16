@@ -22,8 +22,8 @@ const session = await joinSession({
     },
     tools: [
         {
-            name: "copilot_quiz_event_contract",
-            description: "Summarizes the copilot-quiz event contract for copilot-quiz-service.",
+            name: "quiz_dashboard_event_contract",
+            description: "Summarizes the copilot-quiz producer contract for copilot-quiz-service.",
             parameters: {
                 type: "object",
                 properties: {},
