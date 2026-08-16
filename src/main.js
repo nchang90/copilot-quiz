@@ -333,9 +333,12 @@ function renderQuestion() {
 
   question.options.forEach((option, index) => {
     const btn = document.createElement('button')
+    const optionKey = String.fromCharCode(65 + index)
     btn.type = 'button'
     btn.className = 'answer'
-    btn.textContent = `${String.fromCharCode(65 + index)}. ${option}`
+    btn.dataset.index = optionKey
+    btn.setAttribute('aria-label', `${optionKey}: ${option}`)
+    btn.textContent = option
     btn.addEventListener('click', () => selectAnswer(index))
     answersEl.appendChild(btn)
   })
