@@ -20,13 +20,14 @@ Keep the plan focused on a small set of tasks:
 - run the producer and service together
 - validate live dashboard output and error resilience
 ### 3. Stacked PRs
-Use a single repository and build a 3-PR linear chain, matching the workshop pattern in the reference repo.
+Use a single repository and build the stack bottom-up, matching Dan Wahlin’s workshop flow.
 
-- PR 1: `main` → `feat/event-contract`
-- PR 2: `feat/event-contract` → `feat/event-wiring`
-- PR 3: `feat/event-wiring` → `feat/event-validation`
+- Start with the trunk: `main`
+- Layer 1: `feat/event-contract`
+- Layer 2: `feat/event-wiring`
+- Layer 3: `feat/event-validation`
 
-Explain that each pull request shows only its layer, and that a mid-stack PR cannot merge by itself.
+Explain that each pull request shows only its own layer, and that a mid-stack PR cannot merge by itself.
 ### 4. Show my work
 After the agents are active, open the "My work" board to show the task flow in a real product-style view.
 
