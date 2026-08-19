@@ -4,8 +4,8 @@
   --panel: rgba(10, 18, 35, 0.84);
   --panel-strong: rgba(12, 20, 38, 0.96);
   --panel-soft: rgba(17, 27, 45, 0.92);
-  --border: rgba(118, 160, 255, 0.42);
-  --border-strong: rgba(122, 147, 255, 0.62);
+  --border: rgba(0, 162, 255, 0.9);
+  --border-strong: rgba(0, 162, 255, 1);
   --ink: #edf4ff;
   --muted: #b4c1d9;
   --soft: #d8e6ff;

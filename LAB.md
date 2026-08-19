@@ -9,6 +9,8 @@ Explain the goal: this quiz app needs to emit only valid events to the local ser
 - a browser GET to /event will fail with “Cannot GET /event”
 - the quiz app should POST to that endpoint from JavaScript, not by navigating to it in the browser
 ### 2. Canvas + Plan Mode
+Change the quiz border to bright blue
+
 Prompt: *"Instrument this quiz to post events to a local service. Show me a plan first."*
 
 Keep the plan focused on a small set of tasks:
@@ -37,20 +39,18 @@ Open **Automations → Skills**.
 Invoke `event-schema-validation`: *"Check that emitEvent calls use only allowed types with correct payload shape."*
 
 ### 6. Multiple Sessions
-Run Game-Agent and Platform Agent together in parallel:
-- Game-Agent on copilot-quiz
-- Platform Agent on copilot-quiz-service
-Then run Agent Merge and report the compatibility verdict.
-
+Run Game-Agent on `copilot-quiz` and Platform Agent on `copilot-quiz-service` in parallel. Then run Agent Merge. Report **approve**, **request changes**, or **reject**, with blockers. Do not merge unless the verdict is **approve**.
 ### 7. Stacked PRs
 Create a stacked PR if the repo and auth are ready:
 
 ```bash
 # PR 1 — producer changes
+git checkout -b feat/event-emission-wiring
 gh pr create --title "feat: event emission wiring" --body "scoreUpdated + achievementCandidate via emitEvent()"
 
 # PR 2 — stacks on PR 1
-gh pr create --title "feat: service contract validation" --body "Validates event schema after producer PR merges" --base <branch-of-pr-1>
+git checkout -b feat/service-contract-validation
+gh pr create --title "feat: service contract validation" --body "Validates event schema after producer PR merges" --base feat/event-emission-wiring
 ```
 ### 8. Run it live
 Start both services.
@@ -74,10 +74,11 @@ Observe:
 ### 9. Optional review passes
 Only if time allows, add these as polish moments:
 
-- `/impeccable` design review of the event bridge
-- Rubber-Duck review of `emitEvent` edge cases
-- Diff GUI note on the secondary pill: `Make this secondary pill slightly less prominent than the primary one.`
+-  /Rubber-Duck review of emitEvent edge cases
+Rubber-Duck review of emitEvent edge cases — critique serialization, allowlist enforcement, and fire-and-forget error handling in src/counter.js
 
+- Diff GUI note on the secondary pill: `Make this secondary pill slightly less prominent than the primary one.`
+- `/impeccable` design review of the event bridge
 ### 10. `/chronicle` Summary
 Run `/chronicle` to generate the session summary.
 
