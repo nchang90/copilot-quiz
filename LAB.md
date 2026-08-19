@@ -40,17 +40,17 @@ Invoke `event-schema-validation`: *"Check that emitEvent calls use only allowed 
 
 ### 6. Multiple Sessions
 Run Game-Agent on `copilot-quiz` and Platform Agent on `copilot-quiz-service` in parallel. Then run Agent Merge. Report **approve**, **request changes**, or **reject**, with blockers. Do not merge unless the verdict is **approve**.
-### 7. Stacked PRs
-Create a stacked PR if the repo and auth are ready:
+### 7. PRs
+For this demo, keep the producer and service changes in separate PRs. GitHub stacked PRs only work when both branches live in the same repo and PR 2 has a real follow-up commit on top of PR 1.
 
 ```bash
-# PR 1 — producer changes
+# PR 1 — producer changes in copilot-quiz
 git checkout -b feat/event-emission-wiring
 gh pr create --title "feat: event emission wiring" --body "scoreUpdated + achievementCandidate via emitEvent()"
 
-# PR 2 — stacks on PR 1
-git checkout -b feat/service-contract-validation
-gh pr create --title "feat: service contract validation" --body "Validates event schema after producer PR merges" --base feat/event-emission-wiring
+# PR 2 — service-side validation in copilot-quiz-service
+# make the validation change in that repo, then open its own PR there
+gh pr create --title "feat: service contract validation" --body "Validates event schema after producer PR lands"
 ```
 ### 8. Run it live
 Start both services.
