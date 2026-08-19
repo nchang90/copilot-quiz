@@ -77,13 +77,16 @@ Requirements:
 Install and run:
 
 ```bash
-npm ci
-npm run dev
+npm ci && npm run dev
 ```
+
+When using the browser canvas, run the command above first and then open the local dev server in the canvas.
 
 Then open:
 
 - http://localhost:5173
+
+If that port is already in use, Vite will choose the next available port automatically.
 
 To build for production:
 
