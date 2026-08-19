@@ -67,6 +67,8 @@ gh pr create --title "feat: event validation" --body "Verify payloads and allowe
 ```
 
 Use `gh stack view` to inspect the chain and `gh stack sync` when the trunk or a lower layer moves.
+
+If `gh stack init` asks `Enable git rerere to remember conflict resolutions?`, answer `Yes`.
 ### 8. Run it live
 Start both services.
 
