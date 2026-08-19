@@ -19,15 +19,18 @@ Keep the plan focused on a small set of tasks:
 - verify the payloads and event types
 - run the producer and service together
 - validate live dashboard output and error resilience
-### 3. Stacked PRs
-Use a single repository and build the stack bottom-up, matching Dan Wahlin’s workshop flow.
+### 3. What to do next
+Follow this order:
 
-- Start with the trunk: `main`
-- Layer 1: `feat/event-contract`
-- Layer 2: `feat/event-wiring`
-- Layer 3: `feat/event-validation`
+1. Confirm the quiz is only emitting the approved event contract.
+2. Create the stacked PR chain in this order:
+   - `feat/event-contract` from `main`
+   - `feat/event-wiring` from `feat/event-contract`
+   - `feat/event-validation` from `feat/event-wiring`
+3. If any lower branch changes, run `gh stack view --json` and then `gh stack sync`.
+4. Run the producer and service together and verify live dashboard updates.
+5. Finish with the optional review passes only if time allows.
 
-Explain that each pull request shows only its own layer, and that a mid-stack PR cannot merge by itself.
 ### 4. Show my work
 After the agents are active, open the "My work" board to show the task flow in a real product-style view.
 
@@ -43,60 +46,49 @@ Invoke `event-schema-validation`: *"Check that emitEvent calls use only allowed 
 
 ### 6. Multiple Sessions
 Run Game-Agent on `copilot-quiz` and Platform Agent on `copilot-quiz-service` in parallel. Then run Agent Merge. Report **approve**, **request changes**, or **reject**, with blockers. Do not merge unless the verdict is **approve**.
-### 7. Keep the stack current
+### 7. Stack commands to use
 
-Each layer starts from the branch below it, not from `main`. If trunk or a lower layer advances, inspect the stack:
+Use these when you need to inspect or recover the stack:
 
 ```bash
 gh stack view --json
-```
-
-A branch whose parent is no longer an ancestor reports `needsRebase: true`.
-
-For routine synchronization, run:
-
-```bash
 gh stack sync
-```
-
-`sync` fetches and reconciles remote stack state, fast-forwards trunk when possible, cascade-rebases stale branches, pushes the updated branches, and synchronizes pull request and stack state. It does not open pull requests.
-
-Use the split workflow when you want to test and inspect before updating remote branches:
-
-```bash
 gh stack rebase
-npm test
-gh stack view --json
-# Inspect every parent-to-child diff, then approve the remote update.
 gh stack push
+gh stack rebase --abort
 ```
 
-`rebase` is also the recovery path when `sync` reports conflicts. Use `gh stack rebase --abort` if conflict resolution is uncertain.
+Rules:
+- `view` tells you whether a branch needs rebasing.
+- `sync` is the normal way to update and push the stack.
+- `rebase` is the recovery path when conflicts appear.
+- `push` publishes the rebased stack after you inspect it.
+- `rebase --abort` is the escape hatch if the conflict resolution looks wrong.
+
 ### 8. Run it live
 Start both services.
-
-Play the quiz.
-
-Confirm events appear on the dashboard in real time.
 
 ```bash
 cd copilot-quiz && npm run dev
 cd copilot-quiz-service && node src/server.js
 ```
 
-Observe:
-- a score change triggers `scoreUpdated`
-- achievement milestones trigger `achievementCandidate`
-- dashboard updates occur within 2 seconds
-- no CORS errors appear
-- failed network requests never interrupt gameplay
+Then:
+- play the quiz
+- confirm events appear on the dashboard in real time
+- verify a score change triggers `scoreUpdated`
+- verify achievement milestones trigger `achievementCandidate`
+- confirm dashboard updates occur within 2 seconds
+- confirm no CORS errors appear
+- confirm failed network requests never interrupt gameplay
 
 ### 9. Optional review passes
 Only if time allows, add these as polish moments:
 
--  /Rubber-Duck review of emitEvent edge cases
-Rubber-Duck review of emitEvent edge cases — critique serialization, allowlist enforcement, and fire-and-forget error handling in src/counter.js
-
+- Rubber-Duck review of emitEvent edge cases
+  - critique serialization
+  - allowlist enforcement
+  - fire-and-forget error handling in `src/counter.js`
 - Diff GUI note on the secondary pill: `Make this secondary pill slightly less prominent than the primary one.`
 - `/impeccable` design review of the event bridge
 ### 10. `/chronicle` Summary
