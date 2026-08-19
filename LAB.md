@@ -43,32 +43,35 @@ Invoke `event-schema-validation`: *"Check that emitEvent calls use only allowed 
 
 ### 6. Multiple Sessions
 Run Game-Agent on `copilot-quiz` and Platform Agent on `copilot-quiz-service` in parallel. Then run Agent Merge. Report **approve**, **request changes**, or **reject**, with blockers. Do not merge unless the verdict is **approve**.
-### 7. PRs
-For the stacked PR demo, keep all branches in the same repository. Build a three-layer chain so each PR depends on the one below it, just like the reference workshop.
+### 7. Keep the stack current
 
-| Layer | Branch | Base |
-| --- | --- | --- |
-| Contract | `feat/event-contract` | `main` |
-| Wiring | `feat/event-wiring` | `feat/event-contract` |
-| Validation | `feat/event-validation` | `feat/event-wiring` |
+Each layer starts from the branch below it, not from `main`. If trunk or a lower layer advances, inspect the stack:
 
 ```bash
-# PR 1 — contract layer
-git checkout -b feat/event-contract
-gh pr create --title "feat: event contract" --body "Define the event envelope and allowed types"
-
-# PR 2 — wiring layer
-git checkout -b feat/event-wiring
-gh pr create --title "feat: event wiring" --body "Wire emitEvent() to the local service"
-
-# PR 3 — validation layer
-git checkout -b feat/event-validation
-gh pr create --title "feat: event validation" --body "Verify payloads and allowed event types"
+gh stack view --json
 ```
 
-Use `gh stack view` to inspect the chain and `gh stack sync` when the trunk or a lower layer moves.
+A branch whose parent is no longer an ancestor reports `needsRebase: true`.
 
-If `gh stack init` asks `Enable git rerere to remember conflict resolutions?`, answer `Yes`.
+For routine synchronization, run:
+
+```bash
+gh stack sync
+```
+
+`sync` fetches and reconciles remote stack state, fast-forwards trunk when possible, cascade-rebases stale branches, pushes the updated branches, and synchronizes pull request and stack state. It does not open pull requests.
+
+Use the split workflow when you want to test and inspect before updating remote branches:
+
+```bash
+gh stack rebase
+npm test
+gh stack view --json
+# Inspect every parent-to-child diff, then approve the remote update.
+gh stack push
+```
+
+`rebase` is also the recovery path when `sync` reports conflicts. Use `gh stack rebase --abort` if conflict resolution is uncertain.
 ### 8. Run it live
 Start both services.
 
