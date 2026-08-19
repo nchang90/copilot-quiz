@@ -19,12 +19,14 @@ Keep the plan focused on a small set of tasks:
 - verify the payloads and event types
 - run the producer and service together
 - validate live dashboard output and error resilience
-### 3. Agents
-Run these 3 sessions in parallel now and report one final merge verdict. Each agent should frame its work around a different mode so the demo shows the workflow clearly.
+### 3. Stacked PRs
+Use a single repository and build a 3-PR linear chain, matching the workshop pattern in the reference repo.
 
-- copilot-quiz / game agent — Interactive mode: rapid UI and event-flow feedback while the quiz is live
-- copilot-quiz / platform agent — Plan mode: break the work into contract, service, and validation steps before execution
-- copilot-quiz-service / feature/quiz-service-sync — Autopilot mode: execute the end-to-end validation and confirm the dashboard reflects real events
+- PR 1: `main` → `feat/event-contract`
+- PR 2: `feat/event-contract` → `feat/event-wiring`
+- PR 3: `feat/event-wiring` → `feat/event-validation`
+
+Explain that each pull request shows only its layer, and that a mid-stack PR cannot merge by itself.
 ### 4. Show my work
 After the agents are active, open the "My work" board to show the task flow in a real product-style view.
 
@@ -41,17 +43,29 @@ Invoke `event-schema-validation`: *"Check that emitEvent calls use only allowed 
 ### 6. Multiple Sessions
 Run Game-Agent on `copilot-quiz` and Platform Agent on `copilot-quiz-service` in parallel. Then run Agent Merge. Report **approve**, **request changes**, or **reject**, with blockers. Do not merge unless the verdict is **approve**.
 ### 7. PRs
-For this demo, keep the producer and service changes in separate PRs. GitHub stacked PRs only work when both branches live in the same repo and PR 2 has a real follow-up commit on top of PR 1.
+For the stacked PR demo, keep all branches in the same repository. Build a three-layer chain so each PR depends on the one below it, just like the reference workshop.
+
+| Layer | Branch | Base |
+| --- | --- | --- |
+| Contract | `feat/event-contract` | `main` |
+| Wiring | `feat/event-wiring` | `feat/event-contract` |
+| Validation | `feat/event-validation` | `feat/event-wiring` |
 
 ```bash
-# PR 1 — producer changes in copilot-quiz
-git checkout -b feat/event-emission-wiring
-gh pr create --title "feat: event emission wiring" --body "scoreUpdated + achievementCandidate via emitEvent()"
+# PR 1 — contract layer
+git checkout -b feat/event-contract
+gh pr create --title "feat: event contract" --body "Define the event envelope and allowed types"
 
-# PR 2 — service-side validation in copilot-quiz-service
-# make the validation change in that repo, then open its own PR there
-gh pr create --title "feat: service contract validation" --body "Validates event schema after producer PR lands"
+# PR 2 — wiring layer
+git checkout -b feat/event-wiring
+gh pr create --title "feat: event wiring" --body "Wire emitEvent() to the local service"
+
+# PR 3 — validation layer
+git checkout -b feat/event-validation
+gh pr create --title "feat: event validation" --body "Verify payloads and allowed event types"
 ```
+
+Use `gh stack view` to inspect the chain and `gh stack sync` when the trunk or a lower layer moves.
 ### 8. Run it live
 Start both services.
 
