@@ -320,20 +320,10 @@ function emitAchievement(achievement) {
 
 // Polls copilot-quiz-service health and reflects connectivity in the HUD pill.
 // Runs independently of quiz state; failures never interrupt quiz interactivity.
-async function refreshServiceHealthPill() {
-  if (!serviceHealthPillEl) return
+async function updateServiceHealthPill() {
   const isHealthy = await checkServiceHealth()
-  serviceHealthPillEl.textContent = isHealthy
-    ? 'copilot-quiz-service ready'
-    : 'copilot-quiz-service offline'
-  serviceHealthPillEl.classList.toggle('status-pill--online', isHealthy)
-  serviceHealthPillEl.classList.toggle('status-pill--offline', !isHealthy)
-  serviceHealthPillEl.classList.remove('status-pill--checking')
-}
-
-function startServiceHealthPolling() {
-  refreshServiceHealthPill()
-  setInterval(refreshServiceHealthPill, HEALTH_CHECK_INTERVAL_MS)
+  serviceHealthPillEl.textContent = isHealthy ? 'copilot-quiz-service ready' : 'copilot-quiz-service offline'
+  serviceHealthPillEl.className = `status-pill ${isHealthy ? 'status-pill--online' : 'status-pill--offline'}`
 }
 
 function checkMilestones() {
@@ -523,4 +513,5 @@ nextBtn.addEventListener('click', goNext)
 restartBtn.addEventListener('click', resetQuiz)
 
 resetQuiz()
-startServiceHealthPolling()
+updateServiceHealthPill()
+setInterval(updateServiceHealthPill, HEALTH_CHECK_INTERVAL_MS)
