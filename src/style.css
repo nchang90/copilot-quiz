@@ -92,6 +92,18 @@ h1 {
   box-shadow: inset 0 0 0 1px rgba(246, 211, 109, 0.2), 0 0 18px rgba(246, 211, 109, 0.16);
 }
 
+.status-pill--online {
+  border-color: rgba(97, 214, 148, 0.8);
+  color: #7cf0b2;
+  box-shadow: inset 0 0 0 1px rgba(97, 214, 148, 0.2), 0 0 18px rgba(97, 214, 148, 0.16);
+}
+
+.status-pill--offline {
+  border-color: rgba(255, 110, 110, 0.8);
+  color: #ff9d9d;
+  box-shadow: inset 0 0 0 1px rgba(255, 110, 110, 0.2), 0 0 18px rgba(255, 110, 110, 0.16);
+}
+
 .quiz-shell {
   display: block;
 }

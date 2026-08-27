@@ -1,5 +1,5 @@
 import './style.css'
-import { emitEvent } from './counter.js'
+import { emitEvent, checkServiceHealth } from './counter.js'
 
 const scoreEl = document.getElementById('score')
 const streakEl = document.getElementById('streak')
@@ -14,11 +14,13 @@ const feedbackTextEl = document.getElementById('feedback-text')
 const feedbackExplanationEl = document.getElementById('feedback-explanation')
 const nextBtn = document.getElementById('next-btn')
 const restartBtn = document.getElementById('restart-btn')
+const serviceHealthPillEl = document.getElementById('service-health-pill')
 
 const SCORE_PER_CORRECT = 100
 const STREAK_BONUS_STEP = 25
 const ACHIEVEMENT_MILESTONES = [300, 700, 1200, 1800, 2500]
 const QUESTIONS_PER_RUN = 10
+const HEALTH_CHECK_INTERVAL_MS = 10000
 
 const QUESTION_BANK = [
   {
@@ -316,6 +318,14 @@ function emitAchievement(achievement) {
   })
 }
 
+// Polls copilot-quiz-service health and reflects connectivity in the HUD pill.
+// Runs independently of quiz state; failures never interrupt quiz interactivity.
+async function updateServiceHealthPill() {
+  const isHealthy = await checkServiceHealth()
+  serviceHealthPillEl.textContent = isHealthy ? 'copilot-quiz-service ready' : 'copilot-quiz-service offline'
+  serviceHealthPillEl.className = `status-pill ${isHealthy ? 'status-pill--online' : 'status-pill--offline'}`
+}
+
 function checkMilestones() {
   for (const milestone of ACHIEVEMENT_MILESTONES) {
     if (score >= milestone && !achievementsHit.has(milestone)) {
@@ -503,3 +513,5 @@ nextBtn.addEventListener('click', goNext)
 restartBtn.addEventListener('click', resetQuiz)
 
 resetQuiz()
+updateServiceHealthPill()
+setInterval(updateServiceHealthPill, HEALTH_CHECK_INTERVAL_MS)
